@@ -50,14 +50,6 @@ def Readfiche(post_id):
     # Rendre le template HTML et transmettre les données
     return render_template('read_data.html', data=data)
 
-@app.route('/fiche_nom/<string:name>', methods=['GET'])
-def get_client_by_name(name):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM clients WHERE nom=?", (name,))
-    client = cursor.fetchone()
-    conn.close()
-    return render_template('read_data.html', data=client) 
 
 @app.route('/consultation/')
 def ReadBDD():
@@ -99,7 +91,7 @@ def enregistrer_client():
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour insérer un nouveau client
-    cursor.execute('INSERT INTO clients (created, nom, prenom, adresse) VALUES (?, ?, ?, ?)', (07062024, nom, prenom, date))
+    cursor.execute('INSERT INTO clients (created, nom, prenom, adresse) VALUES (?, ?, ?, ?)', (07062024, nom, prenom, ICI))
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
