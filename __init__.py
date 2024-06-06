@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
 from flask import render_template
 from flask import json
@@ -29,7 +30,7 @@ def lecture():
 def authentification():
     if request.method == 'POST':
         # Vérifier les identifiants
-        if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
+        if request.form['username'] == 'user' and request.form['password'] == '12345': # password à cacher par la suite
             session['authentifie'] = True
             # Rediriger vers la route lecture après une authentification réussie
             return redirect(url_for('lecture'))
@@ -61,6 +62,21 @@ def ReadBDD():
 @app.route('/enregistrer_client', methods=['GET'])
 def formulaire_client():
     return render_template('formulaire.html')  # afficher le formulaire
+
+@app.route('/fiche_nom/<nom>', methods=['GET'])
+def fiche_nom(nom):
+    if not est_authentifie():
+        return redirect(url_for('authentification'))
+    
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clients WHERE nom = ?", (nom,))
+    data = cursor.fetchall()
+    conn.close()
+    if data:
+        return jsonify(data)
+    else:
+        return jsonify({"error": "Client not found"})
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():
